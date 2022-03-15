@@ -80,7 +80,8 @@ class EncryptedClient(AsyncClient):
         await self.room_send(
             room_id=room_id,
             message_type="m.room.message",
-            content=content
+            content=content,
+            ignore_unverified_devices=True
         )
 
     @staticmethod
