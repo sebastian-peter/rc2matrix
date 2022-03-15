@@ -97,7 +97,12 @@ class RcImporter:
                     if attach.get('message_link') is None and not attach['remote']:
                         # either image or other file
 
-                        clean_file_name = attach['fileName'].replace(':', '-')
+                        if attach.get('fileName') is not None:
+                            clean_file_name = attach['fileName'].replace(':', '-')
+                        else:
+                            # if fileName not defined, there is still an attachment file
+                            clean_file_name = 'undefined'
+
                         full_file_name = ''.join([attach['fileId'], '-', clean_file_name])
                         file_path = ''.join([INPUT_DIR, 'assets/', full_file_name])
                         mime_type = magic.from_file(file_path, mime=True)
@@ -175,7 +180,7 @@ class RcImporter:
             # attachments usually mean we want to extend our header
 
             def header_addition_plain(a):
-                if a['fileName'] is not None:
+                if a.get('fileName') is not None:
                     return a['fileName']
                 if a.get('message_link') is not None:
                     return a['message_link']
@@ -184,7 +189,7 @@ class RcImporter:
                 return ''
 
             def header_addition_html(a):
-                if a['fileName'] is not None:
+                if a.get('fileName') is not None:
                     return a['fileName']
                 if a.get('message_link') is not None:
                     return ''.join(['<a href="', a['message_link'], '">link</a>'])
