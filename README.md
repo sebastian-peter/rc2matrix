@@ -27,3 +27,5 @@ The input file needs to be placed in `input/` and all corresponding attachments 
   This is because we use [python markdown](https://github.com/Python-Markdown/markdown) here, which might be different from the one used with RC.
 - Remote images (e.g. by using the RC giphy plugin) are currently not displayed. It is possible to implement this though.
 - Message threads are not preserved, as RC exports do not include any indications of threads. Instead, threads are flattened.
+- Related to Element: Despite room settings in Element suggesting that sent messages can be read by users that join the room in the future, this seems to not work.
+  Thus, it is recommended to invite all relevant users to a room _before_ running the import.
