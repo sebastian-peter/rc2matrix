@@ -83,6 +83,10 @@ class RcImporter:
         for d in data:
             msg = d['msg']
 
+            if d.get('type') is not None:
+                # special messages (user removed/added etc.)
+                msg = ''.join(['_', msg, '_'])
+
             # first, send header as separate text msg
             (header_plain, header_html) = self.__create_msg_header(d)
             await self.__send_text_msg(header_plain, header_html, msg)
@@ -175,6 +179,31 @@ class RcImporter:
         date_parsed = datetime.strptime(d['ts'], '%Y-%m-%dT%H:%M:%S.%fZ')
         date_formatted = date_parsed.strftime('%Y-%m-%d %H:%M:%S')
 
+        header_additions_plain = []
+        header_additions_html = []
+
+        if d.get("type") is not None:
+            type_ = d['type']
+            if type_ == 'uj':
+                type_title = 'User joined'
+            elif type_ == 'ru':
+                type_title = 'User removed'
+            elif type_ == 'au':
+                type_title = 'User added'
+            elif type_ == 'message_pinned':
+                type_title = 'Message pinned'
+            elif type_ == 'subscription-role-added':
+                type_title = 'Subscription role added'
+            elif type_ == 'room_changed_privacy':
+                type_title = 'Room privacy changed'
+            elif type_ == 'discussion-created':
+                type_title = 'Discussion created'
+            else:
+                type_title = 'Other'
+
+            header_additions_plain.append(''.join(['action: ', type_title]))
+            header_additions_html.append(''.join(['<em>action:</em> ', type_title]))
+
         attachments = d.get('attachments')
         if attachments is not None:
             # attachments usually mean we want to extend our header
@@ -194,18 +223,21 @@ class RcImporter:
                 if a.get('message_link') is not None:
                     return ''.join(['<a href="', a['message_link'], '">link</a>'])
                 if a.get('remote') and a.get('title'):
-                    return ''.join(['<i>external:</i> ', a['title']])
+                    return ''.join(['<a href="', a['url'], '">', a['title'], '</a>'])
                 return ''
 
-            header_add_plain = ', '.join(map(header_addition_plain, attachments))
-            header_add_html = ', '.join(map(header_addition_html, attachments))
+            header_additions_plain.extend(map(header_addition_plain, attachments))
+            header_additions_html.extend(map(header_addition_html, attachments))
 
-            if header_add_plain:
-                # there is an addition to the header, add it
-                msg_header_plain = ''.join([user, ' // ', date_formatted, ' // ', header_add_plain])
-                msg_header_html = ''.join(['<sub>', user, ' // ', date_formatted, ' // ', header_add_html, '</sub>'])
+        header_add_plain = ', '.join(header_additions_plain)
+        header_add_html = ', '.join(header_additions_html)
 
-                return msg_header_plain, msg_header_html
+        if header_add_plain:
+            # there is an addition to the header, add it
+            msg_header_plain = ''.join([user, ' // ', date_formatted, ' // ', header_add_plain])
+            msg_header_html = ''.join(['<sub>', user, ' // ', date_formatted, ' // ', header_add_html, '</sub>'])
+
+            return msg_header_plain, msg_header_html
 
         # no attachments, thus simple header
         msg_header_plain = ''.join([user, ' // ', date_formatted])
