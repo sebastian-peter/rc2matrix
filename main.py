@@ -213,7 +213,7 @@ class RcImporter:
                     return a['fileName']
                 if a.get('message_link') is not None:
                     return a['message_link']
-                if a.get('remote') and a.get('title'):
+                if a.get('remote') and a.get('title') and a.get('url'):
                     return ''.join(['external: ', a['title']])
                 return ''
 
@@ -222,7 +222,7 @@ class RcImporter:
                     return a['fileName']
                 if a.get('message_link') is not None:
                     return ''.join(['<a href="', a['message_link'], '">link</a>'])
-                if a.get('remote') and a.get('title'):
+                if a.get('remote') and a.get('title') and a.get('url'):
                     return ''.join(['<a href="', a['url'], '">', a['title'], '</a>'])
                 return ''
 
