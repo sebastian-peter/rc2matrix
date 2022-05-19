@@ -42,3 +42,8 @@ Unverified devices of others are ignored: all members of the room do not need to
   This is because we use [python markdown](https://github.com/Python-Markdown/markdown) here, which might be different from the one used with RC.
 - Remote images (e.g. by using the RC giphy plugin) are currently not displayed. It is possible to implement this though.
 - Message threads are not preserved, as RC exports do not include any indications of threads. Instead, threads are flattened.
+
+## Prerequisites
+You need to have `olm` installed on your machine locally.
+It is an implementation of the Double Ratchet cryptographic ratchet in C++.
+For Ubuntu, e.g., you can get it via `sudo apt install python3-olm`.
