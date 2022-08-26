@@ -46,4 +46,4 @@ Unverified devices of others are ignored: all members of the room do not need to
 ## Prerequisites
 You need to have `olm` installed on your machine locally.
 It is an implementation of the Double Ratchet cryptographic ratchet in C++.
-For Ubuntu, e.g., you can get it via `sudo apt install python3-olm`.
+For Ubuntu, e.g., you can get it via `sudo apt install libolm-dev`.
